@@ -5,7 +5,7 @@ namespace AwsDotnetCsharp
 {
     public class Handler
     {
-        public string Hello(Request request)
+        public string FssFunctions(Request request)
         {
             return $"Hello {request.name}! I know you like {request.likes}";
         }

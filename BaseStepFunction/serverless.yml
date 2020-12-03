@@ -4,7 +4,8 @@ frameworkVersion: '2'
 provider:
   name: aws
   runtime: dotnetcore3.1
-  stage: development
+  vpc: ${self:custom.vpc.${opt:stage}}
+  stage: ${opt:stage}
   region: eu-west-2
 
 package:
@@ -12,12 +13,12 @@ package:
   artifact: ./bin/release/netcoreapp3.1/BaseStepFunction.zip
 
 functions:
-  hello:
-    handler: CsharpHandlers::AwsDotnetCsharp.Handler::Hello
+  fssFunctions:
+    handler: CsharpHandlers::AwsDotnetCsharp.Handler::FssFunctions
 
 stepFunctions:
   stateMachines:
-    teststepfunc1:
+    fssstepfunc1:
       events:
         - http:
             path: gofunction
@@ -25,54 +26,73 @@ stepFunctions:
         - schedule:
             rate: rate(10 minutes)
             enabled: true
-            input:
-              name: Selwyn
-              likes: Step Functions
               stageParams:
-                stage: development
-      name: myStateMachine
+                stage: ${opt:stage}
+      name: fssStateMachine-${opt:stage}
       definition:
         Comment: "A test step function deployed via serverless"
-        StartAt: Step1
+        StartAt: Send_email_1
         States:
-          Step1:
+          Send_email_1:
             Type: Task
             Resource:
-              Fn::GetAtt: [hello, Arn]
+              Fn::GetAtt: [fssFunctions, Arn]
+          Wait_1st_month:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [fssFunctions, Arn]
+          Check_org_1:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Has_org_been_reverified:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Send_email_2:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [fssFunctions, Arn]
+          Wait_2nd_month:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [fssFunctions, Arn]
+          Check_org_2:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Has_org_been_reverified2:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Send_email_3:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Wait_3rd_month:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Check_org_3:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Has_org_been_reverified3:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Set_org_paused:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
+          Send_pause_email:
+            Type: Task
+            Resource:
+              Fn::GetAtt: [ fssFunctions, Arn ]
             End: true
       dependsOn: lambdaExecutionRole
       tags:
         Team: HackIt
-#      alarms:
-#        topics:
-#          ok: arn:aws:sns:us-east-1:1234567890:NotifyMe
-#          alarm: arn:aws:sns:us-east-1:1234567890:NotifyMe
-#          insufficientData: arn:aws:sns:us-east-1:1234567890:NotifyMe
-#        metrics:
-#          - executionsTimedOut
-#          - executionsFailed
-#          - executionsAborted
-#          - metric: executionThrottled
-#            treatMissingData: breaching # overrides below default
-#          - executionsSucceeded
-#        treatMissingData: ignore # optional
-    hellostepfunc2:
-      definition:
-        StartAt: Step2
-        States:
-          Step2:
-            Type: Task
-            Resource:
-              Fn::GetAtt: [hello, Arn]
-            End: true
-      dependsOn:
-        - lambdaExecutionRole
-      tags:
-        Team: HackIt
-#  activities:
-#    - myTask
-#    - yourTask
-#  validate: true # enable pre-deployment definition validation (disabled by default)
 
 resources:
   Resources:
@@ -126,6 +146,26 @@ resources:
                     - "lambda:InvokeFunction"
                   Resource: "*"
 
+custom:
+  vpc:
+    development:
+      securityGroupIds:
+        - sg-033babc9f5ce30345
+      subnetIds:
+        - subnet-0deabb5d8fb9c3446
+        - subnet-000b89c249f12a8ad
+    staging:
+      securityGroupIds:
+        - sg-04c73000bf97eae7e
+      subnetIds:
+        - subnet-06d3de1bd9181b0d7
+        - subnet-0ed7d7713d1127656
+    production:
+      securityGroupIds:
+        - sg-060458cddaaa2742a
+      subnetIds:
+        - subnet-01d3657f97a243261
+        - subnet-0b7b8fea07efabf34
 
 plugins:
   - serverless-step-functions
