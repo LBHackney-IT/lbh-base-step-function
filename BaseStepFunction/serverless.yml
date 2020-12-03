@@ -26,6 +26,7 @@ stepFunctions:
         - schedule:
             rate: rate(10 minutes)
             enabled: true
+            input:
               stageParams:
                 stage: ${opt:stage}
       name: fssStateMachine-${opt:stage}
