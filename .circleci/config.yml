@@ -142,10 +142,10 @@ workflows:
               ignore: master
   check-and-deploy-staging-and-production:
     jobs:
-      - build-and-test:
-          filters:
-            branches:
-              only: master
+#      - build-and-test:
+#          filters:
+#            branches:
+#              only: master
       - assume-role-staging:
           context: api-assume-role-staging-context
 #          requires:
