@@ -61,6 +61,7 @@ commands:
           name: Deploy lambda
           command: |
             cd ./BaseStepFunction/
+            sls plugin install --name serverless-step-functions
             sls deploy --stage <<parameters.stage>> --conceal
 
 jobs:
