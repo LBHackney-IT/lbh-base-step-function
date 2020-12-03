@@ -28,8 +28,8 @@ stepFunctions:
             enabled: true
             input:
               stageParams:
-                stage: ${opt:stage}
-      name: fssStateMachine-${opt:stage}
+                stage: ${self:provider.stage}
+      name: fssStateMachine-${self:provider.stage}
       definition:
         Comment: "A test step function deployed via serverless"
         StartAt: Send_email_1
