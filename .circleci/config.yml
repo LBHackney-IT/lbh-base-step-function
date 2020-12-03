@@ -63,7 +63,7 @@ commands:
           command: |
             cd ./BaseStepFunction/
             sls plugin install --name serverless-step-functions
-            sls deploy --stage <<parameters.stage>> --conceal
+            sls deploy --stage <<parameters.stage>>
 
 jobs:
   check-code-formatting:

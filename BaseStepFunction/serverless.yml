@@ -1,5 +1,4 @@
 service: teststepfunction
-
 provider:
   name: aws
   runtime: dotnetcore3.1
