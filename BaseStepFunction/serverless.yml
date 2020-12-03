@@ -10,7 +10,7 @@ provider:
 
 package:
   # individually: true
-  artifact: ./bin/release/netcoreapp3.1/BaseStepFunction.zip
+  artifact: ./bin/release/netcoreapp3.1/fss-step-functions.zip
 
 functions:
   fssFunctions:
